@@ -279,7 +279,7 @@ bool Sudoku::MovePlayer()
                     return true;
                 }
 
-                if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol))// || !checkReplacablity(crow,ccol) )
+                if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol) || !checkReplacablity(crow,ccol) )
                 {
                     system("color 0c");
                     std::cout << "\n********** Not allowed **********\n";
@@ -457,7 +457,7 @@ bool Sudoku::checkNumPre(int random,int bi,int bj,int cr,int cc)
                 for (int c = 0; c < 3; c++)
                 {
                     //Check if in same column
-                    if(bj == j && (bj+cc)%3 == (j+c)%3 || (bi+cr) == (i+r) )
+                    if((bj == j && (bj+cc)%3 == (j+c)%3) || (bi+cr) == (i+r) )
                         if(n_array[i+r][j+c] == random)
                             return false;
 
