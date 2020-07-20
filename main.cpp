@@ -2,11 +2,11 @@
 #include <time.h>
 #include <random>
 #include <iostream>
-using namespace std;
 
 int main()
 {
     srand(time(nullptr));
+	///Space
     Sudoku sudoku;
 
     sudoku.Run();

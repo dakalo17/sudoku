@@ -35,9 +35,6 @@ public:
     Sudoku(int,int);
     void Run();
 
-
-    ~Sudoku();
-
 private:
     ///Holds the structure of the games and the numbers will be added from n_array
     int array[DEFAULT_ROWS][DEFAULT_COLS];
@@ -47,7 +44,6 @@ private:
     int a_array[NUMBERS_SIZE][NUMBERS_SIZE];
     std::string _answer;
     ///Hold coords of empty spaces/0s in n_array
-    std::vector<Valcord> n_Emp;
     Valcord _nEmp[NUMBERS_SIZE*NUMBERS_SIZE];
 
     int _hardMode;
@@ -118,5 +114,4 @@ private:
     bool gameWin();
     ///Usless for now
     bool findNums(int,int,int,int,int);
-
 };

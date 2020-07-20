@@ -268,7 +268,6 @@ bool Sudoku::MovePlayer()
                 std::cin.ignore();
 
 
-
                 if( crow >NUMBERS_SIZE || crow < 0 ||
                     ccol >NUMBERS_SIZE || ccol < 0 ||
                     value>NUMBERS_SIZE || value< 0  )
@@ -615,7 +614,7 @@ bool Sudoku::makeNumber()
 
         }
     }
-    //checkAnother();
+    checkAnother();
     ///Store the correct solutin before putting zeros
     addNumber();
     storeAnswer(_answer);
@@ -824,4 +823,3 @@ bool Sudoku::gameWin()
     ///Have not won
     return false;
 }
-Sudoku::~Sudoku(){}
