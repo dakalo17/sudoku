@@ -1,0 +1,2 @@
+Press any key to continue . . . Array[0][1]:8	:random=8	Coor(0,2)
+Array[0][1]:8	:random=8	Coor(1,1)
