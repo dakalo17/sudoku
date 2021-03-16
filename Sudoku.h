@@ -65,7 +65,7 @@ private:
     void addNumber();
     ///Checks if a number is repeating in n_array
     bool checkNum(int&,int,int);
- 
+
     ///USELESS
     bool checkIndex(int,int);
     ///Checks if a number violates the 'rules'of sudoku,i.e matching of rows
@@ -100,7 +100,7 @@ private:
     int anotherRangecheck(int);
 
     ///Copies n_array into a_array
-    void storeAnswer(std::string&);
+    std::string storeAnswer(std::string&);
     ///Displays answer
     void displayAnswer();
 

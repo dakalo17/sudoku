@@ -250,58 +250,59 @@ bool Sudoku::MovePlayer()
         ///Placing a number
         case'p':
         {
-                std::cout << "\n\nEnter Coords to change" << std::endl;
+            std::cout << "\n\nEnter Coords to change" << std::endl;
 
-                int crow = 0;
-                std::cout << "Row: ";
-                std::cin >>crow;
+            int crow = 0;
+            std::cout << "Row: ";
+            std::cin >>crow;
 
-                int ccol= 0;
-                std::cout << "Col: ";
-                std::cin >>ccol;
+            int ccol= 0;
+            std::cout << "Col: ";
+            std::cin >>ccol;
 
-                int value=0;
-                std::cout << "Value: ";
-                std::cin >>value;
+            int value=0;
+            std::cout << "Value: ";
+            std::cin >>value;
 
-                std::cin.clear();
-                std::cin.ignore();
+            std::cin.clear();
+            std::cin.ignore();
 
 
-                if( crow >NUMBERS_SIZE || crow < 0 ||
-                    ccol >NUMBERS_SIZE || ccol < 0 ||
-                    value>NUMBERS_SIZE || value< 0  )
-                {
-                    system("color 0c");
-                    std::cout << "\n********** Wrong input **********\n";
-                    system("pause");
-                    return true;
-                }
-
-                if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol) || !checkReplacablity(crow,ccol) )
-                {
-                    system("color 0c");
-                    std::cout << "\n********** Not allowed **********\n";
-                    system("pause");
-                    return true;
-                }
-
-                Valcord valcords = placeNum(crow,ccol);
-
-                if(checkNum(value,valcords.bi*3,valcords.bj*3)&& checkNumPre(value,valcords.bi*3,valcords.bj*3,anotherRangecheck(crow),anotherRangecheck(ccol)))
-                {
-                    ///adding to n_array
-                    n_array[crow][ccol] = value;
-                    ///Clearing main array
-                    makeItZeroArray();
-                    ///Adding to array main
-                    addNumber();
-                }else{
-                    std::cout << "\n**********!!! Number already exists !!!**********" << std::endl;
-                    system("color 0c");
-                    system("pause");
-                }
+            if( crow >NUMBERS_SIZE || crow < 0 ||
+                ccol >NUMBERS_SIZE || ccol < 0 ||
+                value>NUMBERS_SIZE || value< 0  )
+            {
+                system("color 0c");
+                std::cout << "\n********** Wrong input **********\n";
+                system("pause");
                 return true;
+            }
+
+            //if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol) || !checkReplacablity(crow,ccol) )
+            if(! (n_array[crow][ccol] == 0 && checkReplacablity(crow,ccol)) )
+            {
+                system("color 0c");
+                std::cout << "\n********** Not allowed **********\n";
+                system("pause");
+                return true;
+            }
+
+            Valcord valcords = placeNum(crow,ccol);
+
+            if(checkNum(value,valcords.bi*3,valcords.bj*3)&& checkNumPre(value,valcords.bi*3,valcords.bj*3,anotherRangecheck(crow),anotherRangecheck(ccol)))
+            {
+                ///adding to n_array
+                n_array[crow][ccol] = value;
+                ///Clearing main array
+                makeItZeroArray();
+                ///Adding to array main
+                addNumber();
+            }else{
+                std::cout << "\n**********!!! Number already exists !!!**********" << std::endl;
+                system("color 0c");
+                system("pause");
+            }
+            return true;
         }
 
         case'c':{
@@ -631,7 +632,7 @@ void Sudoku::displayAnswer()
 }
 
 ///Stores answer to sudoku!!
-void Sudoku::storeAnswer(std::string& _answer)
+std::string Sudoku::storeAnswer(std::string& _answer)
 {
     _answer ="";
    for(int r=0;r<_rows;r++)
