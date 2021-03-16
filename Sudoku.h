@@ -65,7 +65,7 @@ private:
     void addNumber();
     ///Checks if a number is repeating in n_array
     bool checkNum(int&,int,int);
-
+ 
     ///USELESS
     bool checkIndex(int,int);
     ///Checks if a number violates the 'rules'of sudoku,i.e matching of rows

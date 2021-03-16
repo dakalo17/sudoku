@@ -605,7 +605,7 @@ bool Sudoku::makeNumber()
                         }
                         else
                             random =-1;
-                        ///If itirations reach 10 000 that means the sudoku is unsolvable
+                        ///***If itirations reach 10 000 that means the sudoku is unsolvable
                         if(++loops >= (10000))
                             return true;
                     }
@@ -721,7 +721,7 @@ void Sudoku::putZeros()
         {
             RandNofNum = Random(1,8);
             ///Testing for difficulty level
-            RandNofNum = RandNofNum -_hardMode < 0? 0: RandNofNum;
+            RandNofNum = RandNofNum -_hardMode < 0 ? 0: RandNofNum;
             countRand =0;
             while(countRand <= RandNofNum)
             {
