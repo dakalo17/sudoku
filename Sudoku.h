@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <string.h>
+
 static const int DEFAULT_ROWS=12 + 1;
 static const int DEFAULT_COLS=24 + 1;
 
@@ -35,13 +36,15 @@ public:
     Sudoku(int,int);
     void Run();
 
-private:
+
     ///Holds the structure of the games and the numbers will be added from n_array
     int array[DEFAULT_ROWS][DEFAULT_COLS];
+
     ///Only holds the 9 by 9 array of sudoku numbers
     int n_array[NUMBERS_SIZE][NUMBERS_SIZE];
+private:
     ///stores completed sudoku
-    int a_array[NUMBERS_SIZE][NUMBERS_SIZE];
+    //int a_array[NUMBERS_SIZE][NUMBERS_SIZE];
     std::string _answer;
     ///Hold coords of empty spaces/0s in n_array
     Valcord _nEmp[NUMBERS_SIZE*NUMBERS_SIZE];
@@ -68,6 +71,7 @@ private:
 
     ///USELESS
     bool checkIndex(int,int);
+    void showLogo(void);
     ///Checks if a number violates the 'rules'of sudoku,i.e matching of rows
     bool checkNumPre(int random,int bi,int bj,int cr,int cc);
     ///Just generalizes numbers (1,9) into (1,3)

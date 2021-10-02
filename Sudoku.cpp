@@ -28,38 +28,54 @@ Sudoku::Sudoku(int _rows,int _cols)
     InitOption();
 }
 
+void Sudoku::showLogo(){
+std::cout.width(90);
+std::cout<<"                    _                 _       _          \n";
+std::cout.width(90);
+std::cout<<"  ___ _ __ ___   __| |  ___ _   _  __| | ___ | | ___   _ \n";
+std::cout.width(90);
+std::cout<<" / __| '_ ` _ \\ / _` | / __| | | |/ _` |/ _ \\| |/ | | | |\n";
+std::cout.width(90);
+std::cout<<"| (__| | | | | | (_| | \\__ | |_| | (_| | (_) |   <| |_| |\n";
+std::cout.width(90);
+std::cout<<" \\___|_| |_| |_|\\__,_| |___/\\__,_|\\__,_|\\___/|_|\\_\\\\__,_|\n";
+}
+
 void Sudoku::InitOption(){
     ///Initial Input------
    system("color 81");
 
 /*
                     _                 _       _
-  ___ _ __ ___   __| |  ___ _   _  __| | ___ | | ___   _
+  ___ _ __ ___   __| |  ___ _   _  __| | ___ | | _  __   _
  / __| '_ ` _ \ / _` | / __| | | |/ _` |/ _ \| |/ | | | |
 | (__| | | | | | (_| | \__ | |_| | (_| | (_) |   <| |_| |
  \___|_| |_| |_|\__,_| |___/\__,_|\__,_|\___/|_|\_\\__,_|
 
 
     */
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
-    std::cout.width(90);
-    std::cout << "#       # SODOKU       SODOKU         SODOKU     SODOKU #       #\n";
-    std::cout.width(90);
-    std::cout << "#       #  SODOKU         SODOKU            SODOKU      #       #\n";
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
-    for(int i=0;i<2;i++)
-    {
-        std::cout.width(90);
-        std::cout << "#################################################################\n";
-    }
 
-    std::cout.width(90);
+
+//    std::cout.width(90);
+//    std::cout << "#################################################################\n";
+//    std::cout.width(90);
+//    std::cout << "#################################################################\n";
+//    std::cout.width(90);
+//    std::cout << "#       # SODOKU       SODOKU         SODOKU     SODOKU #       #\n";
+//    std::cout.width(90);
+//    std::cout << "#       #  SODOKU         SODOKU            SODOKU      #       #\n";
+//    std::cout.width(90);
+//    std::cout << "#################################################################\n";
+//    for(int i=0;i<2;i++)
+//    {
+//        std::cout.width(90);
+//        std::cout << "#################################################################\n";
+//    }
+    showLogo();
+
+    std::cout.width(95);
     std::cout << "############## Easy Mode:e<===========>Hard Mode:h ##############\n";
-    std::cout.width(90);
+    std::cout.width(95);
     std::cout << "#################################################################\n";
     bool tempBool =true;
     do{
@@ -345,7 +361,7 @@ bool Sudoku::MovePlayer()
 
         case 'w':
         {
-            if(gameWin())
+            if(!gameWin())
             {
                 _dontquit =false;
 
@@ -558,7 +574,6 @@ int Sudoku::rangeCheck(int value)
 
 bool Sudoku::makeNumber()
 {
-
     ///Adds zeros array[][] & n_array[][]
     makeItZero();
 
@@ -580,6 +595,7 @@ bool Sudoku::makeNumber()
     int loops=0;
 
     ///This is where the numbers are put into the array accordingly
+    ///basically 'solving' the sudoku
     for(int i=0;i < NUMBERS_SIZE; i+=3)
     {
         for(int j=0;j < NUMBERS_SIZE; j+=3)
@@ -599,11 +615,11 @@ bool Sudoku::makeNumber()
                             n_array[r+i][c+j] = random;
                             countRand++;
                         }
-                        else if(checkVector({i,j,r+i,c+j}) )
-                        {
-                            _nEmp[index++]={i,j,r+i,c+j};
-                            random =-1;
-                        }
+//                        else if(checkVector({i,j,r+i,c+j}) )
+//                        {
+//                            _nEmp[index++]={i,j,r+i,c+j};
+//                            random =-1;
+//                        }
                         else
                             random =-1;
                         ///***If itirations reach 10 000 that means the sudoku is unsolvable
@@ -615,11 +631,11 @@ bool Sudoku::makeNumber()
 
         }
     }
-    checkAnother();
+    //checkAnother();
     ///Store the correct solutin before putting zeros
     addNumber();
     storeAnswer(_answer);
-    ///Removes from array
+    ///Prepares sudoku for player from array
     makeItZeroArray();
 
     ///Done
