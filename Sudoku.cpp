@@ -21,9 +21,10 @@ Sudoku::Sudoku(int _rows,int _cols)
             placeStuff(r,c);
         }
     }
-    for(int i=0;i<9*9;i++)
+    for(int i=0;i<9*9;i++){
         _nEmp[i] = {-1,-1,-1,-1};
-
+        _ZeroCords[i] = {-1,-1};
+    }
     ///Initial Input------
     InitOption();
 }
@@ -219,7 +220,7 @@ bool Sudoku::movePlayerLoop()
         system("color 07");
         ///Shows the game
         Render();
-       // tempRender();
+        //tempRender();
     }while(MovePlayer());
 
     return 1;
@@ -253,6 +254,7 @@ void Sudoku::Run()
 
 bool Sudoku::MovePlayer()
 {
+    //This is where the user interacts with the game
     ///Menu
     std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nW:Check if you won\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
 
@@ -295,7 +297,8 @@ bool Sudoku::MovePlayer()
             }
 
             //if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol) || !checkReplacablity(crow,ccol) )
-            if(! (n_array[crow][ccol] == 0 && checkReplacablity(crow,ccol)) )
+
+            if(! (checkZeroCords(crow,ccol) ))//checkReplacablity(crow,ccol)) )
             {
                 system("color 0c");
                 std::cout << "\n********** Not allowed **********\n";
@@ -435,11 +438,14 @@ bool Sudoku::MovePlayer()
 bool Sudoku::checkNum(int& random,int i,int j)
 {
     ///i -- big square column. j-- big square row
+    //only zero can repeat
+    if(random == 0)return true;
+
     for(int r=0;r < NUMBERS_SIZE/3; r++)
         for(int c=0;c < NUMBERS_SIZE/3; c++)
-            if(n_array[r+i][c+j] == random)
-                return 0;
-    return 1;
+            if(n_array[r+i][c+j] == random )
+                return false;
+    return true;
 }
 
 void Sudoku::addNumber()
@@ -462,6 +468,9 @@ void Sudoku::addNumber()
 
 bool Sudoku::checkNumPre(int random,int bi,int bj,int cr,int cc)
 {
+
+    if(random == 0)return true;
+
     if(rangeCheck(cr+bi) == 1 && rangeCheck(cc+bj) == 1)
         return true;
      for (int i = 0; i <= bi; i+=3)
@@ -727,11 +736,19 @@ std::string Sudoku::storeAnswer(std::string& _answer)
     }
 }
 
+// I could have used operator overloading but im lazy
+bool Sudoku::checkZeroCords(int row,int col){
+    for(int i=0;i<NUMBERS_SIZE*NUMBERS_SIZE;i++)
+        if(_ZeroCords[i].row == row &&_ZeroCords[i].col == col )
+            return true;
+    return false;
+}
 
 void Sudoku::putZeros()
 {
     int RandNofNum = 0;
     int countRand =0;
+    int index =0;
     for(int i=0;i < NUMBERS_SIZE; i+=3)
     {
         for(int j=0;j < NUMBERS_SIZE; j+=3)
@@ -746,7 +763,16 @@ void Sudoku::putZeros()
                 {
                     for(int c=0;c < NUMBERS_SIZE/3; c++)
                     {
-                        if(Random(1,(_hardMode/4)) == 1) n_array[i+r][(3*Random(0,2)) + Random(0,2)] = 0;
+                        if(Random(1,(_hardMode/4)) == 1){
+                            ///just randomizing as much as possible
+                            int random_col=3*Random(0,2) + Random(0,2);
+                            //c and j not used because we want random column position
+                            n_array[i+r][random_col] = 0;
+
+                            if(!checkZeroCords(i+r,random_col))
+                                _ZeroCords[index++] ={i+r,random_col};
+
+                        }
                         ++countRand;
                     }
                 }
@@ -830,6 +856,17 @@ bool Sudoku::checkReplacablity(int crow,int ccol)
 
     return true;
 }
+
+
+//bool Sudoku::checkReplacablityZeroCords(int row,int col)
+//{
+//    for(int i=0;i<9*9;i++)
+//        if( row == _ZeroCords[i].row &&
+//            col == _ZeroCords[i].col)
+//            return false;
+//
+//    return true;
+//}
 bool Sudoku::gameWin()
 {
     std::string playeranswer="";

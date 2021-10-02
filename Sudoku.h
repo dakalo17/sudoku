@@ -29,6 +29,13 @@ struct Valcord
     int ccol;
 };
 
+//just testing
+struct NumCords{
+    int row;
+    int col;
+};
+
+
 class Sudoku
 {
 public:
@@ -48,6 +55,7 @@ private:
     std::string _answer;
     ///Hold coords of empty spaces/0s in n_array
     Valcord _nEmp[NUMBERS_SIZE*NUMBERS_SIZE];
+    NumCords _ZeroCords[NUMBERS_SIZE*NUMBERS_SIZE];
 
     int _hardMode;
     bool _won;
@@ -93,11 +101,15 @@ private:
     bool checkPlayerPos(int,int);
     int Random(int,int);
 
+
     ///Plyer enteres numbers
     Valcord placeNum(int,int);
 
+    bool checkReplacablityZeroCords(int,int);
+
     ///Checks replacabilty
     bool checkReplacablity(int,int);
+    bool checkZeroCords(int,int);
 
     bool checkAnother();
     //Util method
