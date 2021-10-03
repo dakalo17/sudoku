@@ -9,7 +9,7 @@ static const int DEFAULT_ROWS=12 + 1;
 static const int DEFAULT_COLS=24 + 1;
 
 static const int NUMBERS_SIZE=9;
-static const char obj[] = {'\0','+',(char)205,(char)186,'~','@',(char)200,(char)201,(char)202,(char)203,(char)204,(char)206,(char)185,(char)187,(char)188};
+static const char obj[] = {' ','+',(char)205,(char)186,'~','@',(char)200,(char)201,(char)202,(char)203,(char)204,(char)206,(char)185,(char)187,(char)188};
 ///static const char obj[] = {'\0','+','-','|','~','@'};
 enum FEATURES
 {
@@ -77,6 +77,7 @@ private:
     ///Checks if a number is repeating in n_array
     bool checkNum(int&,int,int);
 
+    void replacebles();
     ///USELESS
     bool checkIndex(int,int);
     void showLogo(void);
@@ -94,6 +95,7 @@ private:
     void Render();
     ///~~Test output
     void tempRender();
+    void toFile();
 
     ///Interface where input is managed,placing number,or exiting game
     bool MovePlayer();

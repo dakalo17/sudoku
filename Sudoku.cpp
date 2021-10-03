@@ -6,6 +6,9 @@
 #include <time.h>
 #include <sstream>
 
+#include <fstream>
+#include <ctype.h>
+
 Sudoku::Sudoku() : Sudoku(DEFAULT_ROWS,DEFAULT_COLS){}
 Sudoku::Sudoku(int _rows,int _cols)
 {
@@ -28,6 +31,36 @@ Sudoku::Sudoku(int _rows,int _cols)
     ///Initial Input------
     InitOption();
 }
+
+void Sudoku::toFile(){
+
+    system("cls");
+    system("color 04");
+    std::cout << "Confirm 'array to File'\ny-Yes\nn-No" <<std::endl;
+    if(tolower(getch()) != 'y')return;
+
+    std::ofstream out;
+
+    out.open("Game",std::ios::trunc);
+
+    std::stringstream ss;
+    std::string newstr = "";
+    std::string playeranswer;
+
+    storeAnswer(playeranswer);
+
+    for(char& c : playeranswer) {
+        if(isdigit(c) || c == obj[0] ||
+            c == '\n' || c == '-')
+            newstr += c;
+    }
+
+    out<< (newstr =="" ? playeranswer : newstr) <<std::endl;
+
+    out.close();
+
+}
+
 
 void Sudoku::showLogo(){
 std::cout.width(90);
@@ -72,14 +105,16 @@ void Sudoku::InitOption(){
 //        std::cout.width(90);
 //        std::cout << "#################################################################\n";
 //    }
-    showLogo();
 
-    std::cout.width(95);
-    std::cout << "############## Easy Mode:e<===========>Hard Mode:h ##############\n";
-    std::cout.width(95);
-    std::cout << "#################################################################\n";
     bool tempBool =true;
     do{
+        showLogo();
+
+        std::cout.width(95);
+        std::cout << "############## Easy Mode:e<===========>Hard Mode:h ##############\n";
+        std::cout.width(95);
+        std::cout << "#################################################################\n";
+
         char choice = '\0';
         std::cin >>choice;
 
@@ -95,6 +130,8 @@ void Sudoku::InitOption(){
             _hardMode = 15;
         else
             _hardMode = 4;
+        system("pause");
+        system("cls");
 
     }while(tempBool);
 
@@ -252,11 +289,25 @@ void Sudoku::Run()
     }
 }
 
+
+void Sudoku::replacebles(){
+    system("cls");
+    for(int i=0;i<81;i++)
+        if(_ZeroCords[i].row != -1 ||
+           _ZeroCords[i].col != -1)
+            std::cout << '(' << _ZeroCords[i].row << ',' << _ZeroCords[i].col << ')' << std::endl;
+    system("pause");
+}
+
 bool Sudoku::MovePlayer()
 {
     //This is where the user interacts with the game
+
     ///Menu
-    std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nW:Check if you won\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
+    std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nN:Check replacable positions\nW:Check if you won\n\F:To File\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
+
+
+
 
     switch(tolower(getch()))
     {
@@ -364,7 +415,7 @@ bool Sudoku::MovePlayer()
 
         case 'w':
         {
-            if(!gameWin())
+            if(gameWin())
             {
                 _dontquit =false;
 
@@ -399,6 +450,14 @@ bool Sudoku::MovePlayer()
             return true;
 
         };
+        case 'n':{
+            replacebles();
+            return true;
+        }
+        case 'f':{
+            toFile();
+            return true;
+        }
 
     }
 
@@ -468,10 +527,8 @@ void Sudoku::addNumber()
 
 bool Sudoku::checkNumPre(int random,int bi,int bj,int cr,int cc)
 {
-
-    if(random == 0)return true;
-
-    if(rangeCheck(cr+bi) == 1 && rangeCheck(cc+bj) == 1)
+    if(rangeCheck(cr+bi) == 1 && rangeCheck(cc+bj) == 1 ||
+       random == 0)
         return true;
      for (int i = 0; i <= bi; i+=3)
      {
@@ -598,7 +655,7 @@ bool Sudoku::makeNumber()
         return true;
     };
 
-    int RandNofNum= 0;
+
     int countRand = 0;
     int index =0;
     int loops=0;
@@ -609,9 +666,7 @@ bool Sudoku::makeNumber()
     {
         for(int j=0;j < NUMBERS_SIZE; j+=3)
         {
-            RandNofNum = Random(1,7);
 
-            RandNofNum = RandNofNum -_hardMode < 0? 0: RandNofNum;
             countRand =0;
             while(checkZero(i,j))
             {
