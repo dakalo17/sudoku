@@ -6,6 +6,9 @@
 #include <time.h>
 #include <sstream>
 
+#include <fstream>
+#include <ctype.h>
+
 Sudoku::Sudoku() : Sudoku(DEFAULT_ROWS,DEFAULT_COLS){}
 Sudoku::Sudoku(int _rows,int _cols)
 {
@@ -21,11 +24,55 @@ Sudoku::Sudoku(int _rows,int _cols)
             placeStuff(r,c);
         }
     }
-    for(int i=0;i<9*9;i++)
+    for(int i=0;i<9*9;i++){
         _nEmp[i] = {-1,-1,-1,-1};
-
+        _ZeroCords[i] = {-1,-1};
+    }
     ///Initial Input------
     InitOption();
+}
+
+void Sudoku::toFile(){
+
+    system("cls");
+    system("color 04");
+    std::cout << "Confirm 'array to File'\ny-Yes\nn-No" <<std::endl;
+    if(tolower(getch()) != 'y')return;
+
+    std::ofstream out;
+
+    out.open("Game",std::ios::trunc);
+
+    std::stringstream ss;
+    std::string newstr = "";
+    std::string playeranswer;
+
+    storeAnswer(playeranswer);
+
+    for(char& c : playeranswer) {
+        if(isdigit(c) || c == obj[0] ||
+            c == '\n' || c == '-')
+            newstr += c;
+    }
+
+    out<< (newstr =="" ? playeranswer : newstr) <<std::endl;
+
+    out.close();
+
+}
+
+
+void Sudoku::showLogo(){
+std::cout.width(90);
+std::cout<<"                    _                 _       _          \n";
+std::cout.width(90);
+std::cout<<"  ___ _ __ ___   __| |  ___ _   _  __| | ___ | | ___   _ \n";
+std::cout.width(90);
+std::cout<<" / __| '_ ` _ \\ / _` | / __| | | |/ _` |/ _ \\| |/ | | | |\n";
+std::cout.width(90);
+std::cout<<"| (__| | | | | | (_| | \\__ | |_| | (_| | (_) |   <| |_| |\n";
+std::cout.width(90);
+std::cout<<" \\___|_| |_| |_|\\__,_| |___/\\__,_|\\__,_|\\___/|_|\\_\\\\__,_|\n";
 }
 
 void Sudoku::InitOption(){
@@ -34,35 +81,40 @@ void Sudoku::InitOption(){
 
 /*
                     _                 _       _
-  ___ _ __ ___   __| |  ___ _   _  __| | ___ | | ___   _
+  ___ _ __ ___   __| |  ___ _   _  __| | ___ | | _  __   _
  / __| '_ ` _ \ / _` | / __| | | |/ _` |/ _ \| |/ | | | |
 | (__| | | | | | (_| | \__ | |_| | (_| | (_) |   <| |_| |
  \___|_| |_| |_|\__,_| |___/\__,_|\__,_|\___/|_|\_\\__,_|
 
 
     */
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
-    std::cout.width(90);
-    std::cout << "#       # SODOKU       SODOKU         SODOKU     SODOKU #       #\n";
-    std::cout.width(90);
-    std::cout << "#       #  SODOKU         SODOKU            SODOKU      #       #\n";
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
-    for(int i=0;i<2;i++)
-    {
-        std::cout.width(90);
-        std::cout << "#################################################################\n";
-    }
 
-    std::cout.width(90);
-    std::cout << "############## Easy Mode:e<===========>Hard Mode:h ##############\n";
-    std::cout.width(90);
-    std::cout << "#################################################################\n";
+
+//    std::cout.width(90);
+//    std::cout << "#################################################################\n";
+//    std::cout.width(90);
+//    std::cout << "#################################################################\n";
+//    std::cout.width(90);
+//    std::cout << "#       # SODOKU       SODOKU         SODOKU     SODOKU #       #\n";
+//    std::cout.width(90);
+//    std::cout << "#       #  SODOKU         SODOKU            SODOKU      #       #\n";
+//    std::cout.width(90);
+//    std::cout << "#################################################################\n";
+//    for(int i=0;i<2;i++)
+//    {
+//        std::cout.width(90);
+//        std::cout << "#################################################################\n";
+//    }
+
     bool tempBool =true;
     do{
+        showLogo();
+
+        std::cout.width(95);
+        std::cout << "############## Easy Mode:e<===========>Hard Mode:h ##############\n";
+        std::cout.width(95);
+        std::cout << "#################################################################\n";
+
         char choice = '\0';
         std::cin >>choice;
 
@@ -78,6 +130,8 @@ void Sudoku::InitOption(){
             _hardMode = 15;
         else
             _hardMode = 4;
+        system("pause");
+        system("cls");
 
     }while(tempBool);
 
@@ -203,7 +257,7 @@ bool Sudoku::movePlayerLoop()
         system("color 07");
         ///Shows the game
         Render();
-       // tempRender();
+        //tempRender();
     }while(MovePlayer());
 
     return 1;
@@ -235,10 +289,30 @@ void Sudoku::Run()
     }
 }
 
+
+void Sudoku::replacebles(){
+    system("cls");
+    for(int i=0;i<81;i++)
+        if(_ZeroCords[i].row != -1 ||
+           _ZeroCords[i].col != -1)
+            std::cout << '(' << _ZeroCords[i].row << ',' << _ZeroCords[i].col << ')' << std::endl;
+    system("pause");
+}
+
 bool Sudoku::MovePlayer()
 {
+    //This is where the user interacts with the game
+
     ///Menu
-    std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nW:Check if you won\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
+    std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nN:Check replacable positions\nW:Check if you won\nF:To File\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
+
+
+    std::vector<int> ar ;
+
+    ar.push_back(1);
+
+    p_array.push_back(ar);
+
 
     switch(tolower(getch()))
     {
@@ -250,59 +324,60 @@ bool Sudoku::MovePlayer()
         ///Placing a number
         case'p':
         {
-                std::cout << "\n\nEnter Coords to change" << std::endl;
+            std::cout << "\n\nEnter Coords to change" << std::endl;
 
-                int crow = 0;
-                std::cout << "Row: ";
-                std::cin >>crow;
+            int crow = 0;
+            std::cout << "Row: ";
+            std::cin >>crow;
 
-                int ccol= 0;
-                std::cout << "Col: ";
-                std::cin >>ccol;
+            int ccol= 0;
+            std::cout << "Col: ";
+            std::cin >>ccol;
 
-                int value=0;
-                std::cout << "Value: ";
-                std::cin >>value;
+            int value=0;
+            std::cout << "Value: ";
+            std::cin >>value;
 
-                std::cin.clear();
-                std::cin.ignore();
+            std::cin.clear();
+            std::cin.ignore();
 
 
-
-                if( crow >NUMBERS_SIZE || crow < 0 ||
-                    ccol >NUMBERS_SIZE || ccol < 0 ||
-                    value>NUMBERS_SIZE || value< 0  )
-                {
-                    system("color 0c");
-                    std::cout << "\n********** Wrong input **********\n";
-                    system("pause");
-                    return true;
-                }
-
-                if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol))// || !checkReplacablity(crow,ccol) )
-                {
-                    system("color 0c");
-                    std::cout << "\n********** Not allowed **********\n";
-                    system("pause");
-                    return true;
-                }
-
-                Valcord valcords = placeNum(crow,ccol);
-
-                if(checkNum(value,valcords.bi*3,valcords.bj*3)&& checkNumPre(value,valcords.bi*3,valcords.bj*3,anotherRangecheck(crow),anotherRangecheck(ccol)))
-                {
-                    ///adding to n_array
-                    n_array[crow][ccol] = value;
-                    ///Clearing main array
-                    makeItZeroArray();
-                    ///Adding to array main
-                    addNumber();
-                }else{
-                    std::cout << "\n**********!!! Number already exists !!!**********" << std::endl;
-                    system("color 0c");
-                    system("pause");
-                }
+            if( crow >NUMBERS_SIZE || crow < 0 ||
+                ccol >NUMBERS_SIZE || ccol < 0 ||
+                value>NUMBERS_SIZE || value< 0  )
+            {
+                system("color 0c");
+                std::cout << "\n********** Wrong input **********\n";
+                system("pause");
                 return true;
+            }
+
+            //if((n_array[crow][ccol]) != 0 && checkReplacablity(crow,ccol) || !checkReplacablity(crow,ccol) )
+
+            if(! (checkZeroCords(crow,ccol) ))//checkReplacablity(crow,ccol)) )
+            {
+                system("color 0c");
+                std::cout << "\n********** Not allowed **********\n";
+                system("pause");
+                return true;
+            }
+
+            Valcord valcords = placeNum(crow,ccol);
+
+            if(checkNum(value,valcords.bi*3,valcords.bj*3)&& checkNumPre(value,valcords.bi*3,valcords.bj*3,anotherRangecheck(crow),anotherRangecheck(ccol)))
+            {
+                ///adding to n_array
+                n_array[crow][ccol] = value;
+                ///Clearing main array
+                makeItZeroArray();
+                ///Adding to array main
+                addNumber();
+            }else{
+                std::cout << "\n**********!!! Number already exists !!!**********" << std::endl;
+                system("color 0c");
+                system("pause");
+            }
+            return true;
         }
 
         case'c':{
@@ -379,7 +454,16 @@ bool Sudoku::MovePlayer()
             system("pause");
             return true;
 
+           // p_array.push_back()
         };
+        case 'n':{
+            replacebles();
+            return true;
+        }
+        case 'f':{
+            toFile();
+            return true;
+        }
 
     }
 
@@ -419,11 +503,14 @@ bool Sudoku::MovePlayer()
 bool Sudoku::checkNum(int& random,int i,int j)
 {
     ///i -- big square column. j-- big square row
+    //only zero can repeat
+    if(random == 0)return true;
+
     for(int r=0;r < NUMBERS_SIZE/3; r++)
         for(int c=0;c < NUMBERS_SIZE/3; c++)
-            if(n_array[r+i][c+j] == random)
-                return 0;
-    return 1;
+            if(n_array[r+i][c+j] == random )
+                return false;
+    return true;
 }
 
 void Sudoku::addNumber()
@@ -446,7 +533,8 @@ void Sudoku::addNumber()
 
 bool Sudoku::checkNumPre(int random,int bi,int bj,int cr,int cc)
 {
-    if(rangeCheck(cr+bi) == 1 && rangeCheck(cc+bj) == 1)
+    if(rangeCheck(cr+bi) == 1 && rangeCheck(cc+bj) == 1 ||
+       random == 0)
         return true;
      for (int i = 0; i <= bi; i+=3)
      {
@@ -457,7 +545,7 @@ bool Sudoku::checkNumPre(int random,int bi,int bj,int cr,int cc)
                 for (int c = 0; c < 3; c++)
                 {
                     //Check if in same column
-                    if(bj == j && (bj+cc)%3 == (j+c)%3 || (bi+cr) == (i+r) )
+                    if((bj == j && (bj+cc)%3 == (j+c)%3) || (bi+cr) == (i+r) )
                         if(n_array[i+r][j+c] == random)
                             return false;
 
@@ -558,7 +646,6 @@ int Sudoku::rangeCheck(int value)
 
 bool Sudoku::makeNumber()
 {
-
     ///Adds zeros array[][] & n_array[][]
     makeItZero();
 
@@ -574,19 +661,18 @@ bool Sudoku::makeNumber()
         return true;
     };
 
-    int RandNofNum= 0;
+
     int countRand = 0;
     int index =0;
     int loops=0;
 
     ///This is where the numbers are put into the array accordingly
+    ///basically 'solving' the sudoku
     for(int i=0;i < NUMBERS_SIZE; i+=3)
     {
         for(int j=0;j < NUMBERS_SIZE; j+=3)
         {
-            RandNofNum = Random(1,7);
 
-            RandNofNum = RandNofNum -_hardMode < 0? 0: RandNofNum;
             countRand =0;
             while(checkZero(i,j))
             {
@@ -599,14 +685,14 @@ bool Sudoku::makeNumber()
                             n_array[r+i][c+j] = random;
                             countRand++;
                         }
-                        else if(checkVector({i,j,r+i,c+j}) )
-                        {
-                            _nEmp[index++]={i,j,r+i,c+j};
-                            random =-1;
-                        }
+//                        else if(checkVector({i,j,r+i,c+j}) )
+//                        {
+//                            _nEmp[index++]={i,j,r+i,c+j};
+//                            random =-1;
+//                        }
                         else
                             random =-1;
-                        ///If itirations reach 10 000 that means the sudoku is unsolvable
+                        ///***If itirations reach 10 000 that means the sudoku is unsolvable
                         if(++loops >= (10000))
                             return true;
                     }
@@ -619,20 +705,58 @@ bool Sudoku::makeNumber()
     ///Store the correct solutin before putting zeros
     addNumber();
     storeAnswer(_answer);
-    ///Removes from array
+    ///Prepares sudoku for player from array
     makeItZeroArray();
-
+    //~~~ Solve array ~~~
+//    solve();
     ///Done
     return false;
 }
+/*
+std::vector< <std::vector<int> > solve(){
 
+    //getting unsolved array
+    //and then finding all possible solutions
+
+    std::vector< <std::vector<int> > arr;
+
+    int tempArr[NUMBERS_SIZE] [NUMBERS_SIZE] ;
+
+
+
+    //static int arr[NUMBERS_SIZE][NUMBERS_SIZE] ;
+    std::string str = "";
+    for(int i=0;i<NUMBERS_SIZE;i++){
+
+        //arr[i] = new int[NUMBERS_SIZE];
+        std::vector<int> a = nullptr;
+
+
+        for(int j=0;j<NUMBERS_SIZE;j++){
+
+            //tempArr[i][j]
+            //arr = SPACE;
+            tempArr[i][j] = array[i][j];
+
+            str += tempArr[i][j];
+        }
+    }
+    std::cout << "******** "<< str << " ********"<< std::endl;
+    system("pause");
+
+
+
+    return arr;
+}
+
+*/
 void Sudoku::displayAnswer()
 {
     std::cout << _answer;
 }
 
 ///Stores answer to sudoku!!
-void Sudoku::storeAnswer(std::string& _answer)
+std::string Sudoku::storeAnswer(std::string& _answer)
 {
     _answer ="";
    for(int r=0;r<_rows;r++)
@@ -711,18 +835,26 @@ void Sudoku::storeAnswer(std::string& _answer)
     }
 }
 
+// I could have used operator overloading but im lazy
+bool Sudoku::checkZeroCords(int row,int col){
+    for(int i=0;i<NUMBERS_SIZE*NUMBERS_SIZE;i++)
+        if(_ZeroCords[i].row == row &&_ZeroCords[i].col == col )
+            return true;
+    return false;
+}
 
 void Sudoku::putZeros()
 {
     int RandNofNum = 0;
     int countRand =0;
+    int index =0;
     for(int i=0;i < NUMBERS_SIZE; i+=3)
     {
         for(int j=0;j < NUMBERS_SIZE; j+=3)
         {
             RandNofNum = Random(1,8);
             ///Testing for difficulty level
-            RandNofNum = RandNofNum -_hardMode < 0? 0: RandNofNum;
+            RandNofNum = RandNofNum -_hardMode < 0 ? 0: RandNofNum;
             countRand =0;
             while(countRand <= RandNofNum)
             {
@@ -730,7 +862,16 @@ void Sudoku::putZeros()
                 {
                     for(int c=0;c < NUMBERS_SIZE/3; c++)
                     {
-                        if(Random(1,(_hardMode/4)) == 1) n_array[i+r][(3*Random(0,2)) + Random(0,2)] = 0;
+                        if(Random(1,(_hardMode/4)) == 1){
+                            ///just randomizing as much as possible
+                            int random_col=3*Random(0,2) + Random(0,2);
+                            //c and j not used because we want random column position
+                            n_array[i+r][random_col] = 0;
+
+                            if(!checkZeroCords(i+r,random_col))
+                                _ZeroCords[index++] ={i+r,random_col};
+
+                        }
                         ++countRand;
                     }
                 }
@@ -814,6 +955,17 @@ bool Sudoku::checkReplacablity(int crow,int ccol)
 
     return true;
 }
+
+
+//bool Sudoku::checkReplacablityZeroCords(int row,int col)
+//{
+//    for(int i=0;i<9*9;i++)
+//        if( row == _ZeroCords[i].row &&
+//            col == _ZeroCords[i].col)
+//            return false;
+//
+//    return true;
+//}
 bool Sudoku::gameWin()
 {
     std::string playeranswer="";
@@ -824,4 +976,3 @@ bool Sudoku::gameWin()
     ///Have not won
     return false;
 }
-Sudoku::~Sudoku(){}

@@ -4,11 +4,14 @@
 #include <algorithm>
 #include <vector>
 #include <string.h>
+
 static const int DEFAULT_ROWS=12 + 1;
 static const int DEFAULT_COLS=24 + 1;
 
 static const int NUMBERS_SIZE=9;
-static const char obj[] = {'\0','+',(char)205,(char)186,'~','@',(char)200,(char)201,(char)202,(char)203,(char)204,(char)206,(char)185,(char)187,(char)188};
+static const int THREE_SIZE=3;
+
+static const char obj[] = {' ','+',(char)205,(char)186,'~','@',(char)200,(char)201,(char)202,(char)203,(char)204,(char)206,(char)185,(char)187,(char)188};
 ///static const char obj[] = {'\0','+','-','|','~','@'};
 enum FEATURES
 {
@@ -28,6 +31,13 @@ struct Valcord
     int ccol;
 };
 
+//just testing
+struct NumCords{
+    int row;
+    int col;
+};
+
+
 class Sudoku
 {
 public:
@@ -36,19 +46,24 @@ public:
     void Run();
 
 
-    ~Sudoku();
-
-private:
     ///Holds the structure of the games and the numbers will be added from n_array
     int array[DEFAULT_ROWS][DEFAULT_COLS];
+
+    //another array for storing all possible solutions of a sudoku puzzle
+    //-- TO DO --
+
+    //std::vector<int> p_array[NUMBERS_SIZE][NUMBERS_SIZE];
+    std::vector<std::vector<int>> p_array;
+
     ///Only holds the 9 by 9 array of sudoku numbers
     int n_array[NUMBERS_SIZE][NUMBERS_SIZE];
+private:
     ///stores completed sudoku
-    int a_array[NUMBERS_SIZE][NUMBERS_SIZE];
+    //int a_array[NUMBERS_SIZE][NUMBERS_SIZE];
     std::string _answer;
     ///Hold coords of empty spaces/0s in n_array
-    std::vector<Valcord> n_Emp;
     Valcord _nEmp[NUMBERS_SIZE*NUMBERS_SIZE];
+    NumCords _ZeroCords[NUMBERS_SIZE*NUMBERS_SIZE];
 
     int _hardMode;
     bool _won;
@@ -70,8 +85,11 @@ private:
     ///Checks if a number is repeating in n_array
     bool checkNum(int&,int,int);
 
+//    std::vector<<std::vector<int> > solve();
+    void replacebles();
     ///USELESS
     bool checkIndex(int,int);
+    void showLogo(void);
     ///Checks if a number violates the 'rules'of sudoku,i.e matching of rows
     bool checkNumPre(int random,int bi,int bj,int cr,int cc);
     ///Just generalizes numbers (1,9) into (1,3)
@@ -86,6 +104,7 @@ private:
     void Render();
     ///~~Test output
     void tempRender();
+    void toFile();
 
     ///Interface where input is managed,placing number,or exiting game
     bool MovePlayer();
@@ -93,18 +112,22 @@ private:
     bool checkPlayerPos(int,int);
     int Random(int,int);
 
+
     ///Plyer enteres numbers
     Valcord placeNum(int,int);
 
+    bool checkReplacablityZeroCords(int,int);
+
     ///Checks replacabilty
     bool checkReplacablity(int,int);
+    bool checkZeroCords(int,int);
 
     bool checkAnother();
     //Util method
     int anotherRangecheck(int);
 
     ///Copies n_array into a_array
-    void storeAnswer(std::string&);
+    std::string storeAnswer(std::string&);
     ///Displays answer
     void displayAnswer();
 
@@ -118,5 +141,6 @@ private:
     bool gameWin();
     ///Usless for now
     bool findNums(int,int,int,int,int);
+
 
 };
