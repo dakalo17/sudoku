@@ -9,6 +9,8 @@ static const int DEFAULT_ROWS=12 + 1;
 static const int DEFAULT_COLS=24 + 1;
 
 static const int NUMBERS_SIZE=9;
+static const int THREE_SIZE=3;
+
 static const char obj[] = {' ','+',(char)205,(char)186,'~','@',(char)200,(char)201,(char)202,(char)203,(char)204,(char)206,(char)185,(char)187,(char)188};
 ///static const char obj[] = {'\0','+','-','|','~','@'};
 enum FEATURES
@@ -47,6 +49,12 @@ public:
     ///Holds the structure of the games and the numbers will be added from n_array
     int array[DEFAULT_ROWS][DEFAULT_COLS];
 
+    //another array for storing all possible solutions of a sudoku puzzle
+    //-- TO DO --
+
+    //std::vector<int> p_array[NUMBERS_SIZE][NUMBERS_SIZE];
+    std::vector<std::vector<int>> p_array;
+
     ///Only holds the 9 by 9 array of sudoku numbers
     int n_array[NUMBERS_SIZE][NUMBERS_SIZE];
 private:
@@ -77,6 +85,7 @@ private:
     ///Checks if a number is repeating in n_array
     bool checkNum(int&,int,int);
 
+//    std::vector<<std::vector<int> > solve();
     void replacebles();
     ///USELESS
     bool checkIndex(int,int);
@@ -132,4 +141,6 @@ private:
     bool gameWin();
     ///Usless for now
     bool findNums(int,int,int,int,int);
+
+
 };

@@ -304,9 +304,14 @@ bool Sudoku::MovePlayer()
     //This is where the user interacts with the game
 
     ///Menu
-    std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nN:Check replacable positions\nW:Check if you won\n\F:To File\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
+    std::cout <<"X:EXIT\nR:Change puzzle\nP:Place\nA:***#Reveal Answer#***\nN:Check replacable positions\nW:Check if you won\nF:To File\n--ANY OTHER KEY TO RESET--\n\nEnter : ";
 
 
+    std::vector<int> ar ;
+
+    ar.push_back(1);
+
+    p_array.push_back(ar);
 
 
     switch(tolower(getch()))
@@ -449,6 +454,7 @@ bool Sudoku::MovePlayer()
             system("pause");
             return true;
 
+           // p_array.push_back()
         };
         case 'n':{
             replacebles();
@@ -701,11 +707,49 @@ bool Sudoku::makeNumber()
     storeAnswer(_answer);
     ///Prepares sudoku for player from array
     makeItZeroArray();
-
+    //~~~ Solve array ~~~
+//    solve();
     ///Done
     return false;
 }
+/*
+std::vector< <std::vector<int> > solve(){
 
+    //getting unsolved array
+    //and then finding all possible solutions
+
+    std::vector< <std::vector<int> > arr;
+
+    int tempArr[NUMBERS_SIZE] [NUMBERS_SIZE] ;
+
+
+
+    //static int arr[NUMBERS_SIZE][NUMBERS_SIZE] ;
+    std::string str = "";
+    for(int i=0;i<NUMBERS_SIZE;i++){
+
+        //arr[i] = new int[NUMBERS_SIZE];
+        std::vector<int> a = nullptr;
+
+
+        for(int j=0;j<NUMBERS_SIZE;j++){
+
+            //tempArr[i][j]
+            //arr = SPACE;
+            tempArr[i][j] = array[i][j];
+
+            str += tempArr[i][j];
+        }
+    }
+    std::cout << "******** "<< str << " ********"<< std::endl;
+    system("pause");
+
+
+
+    return arr;
+}
+
+*/
 void Sudoku::displayAnswer()
 {
     std::cout << _answer;
